@@ -40,16 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/logo.png', width: 100, height: 100),
-              const SizedBox(height: 16.0),
-              const Text(
-                'Mr Match',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Image.asset('assets/images/logo.png', width: 200, height: 200),
+              
             ],
           ),
         ),
