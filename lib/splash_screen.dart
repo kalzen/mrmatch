@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mr_match/main.dart';
+import 'package:mr_match/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,15 +13,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHomeScreen();
+    _navigateToLoginScreen();
   }
 
-  void _navigateToHomeScreen() {
+  void _navigateToLoginScreen() {
     Timer(const Duration(seconds: 3), () {
-      // Navigate to the home screen after the splash screen delay
+      // Navigate to the login screen after the splash screen delay
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Mr Match Home Page')),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     });
   }
@@ -41,7 +41,6 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/images/logo.png', width: 200, height: 200),
-              
             ],
           ),
         ),
