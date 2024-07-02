@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mr_match/gradient_button.dart';
 import 'package:mr_match/main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      try {
+      
         final response = await http.post(
           Uri.parse('https://mrmatch-production.up.railway.app/auth/login/'),
           headers: {'Content-Type': 'application/json'},
@@ -32,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
             'password': password,
           }),
         );
+         debugPrint(response.body);
 
         if (response.statusCode == 200) {
           // Login successful, navigate to the home page
@@ -47,15 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
-      } catch (e) {
-        // Log the error and display a generic error message
-        print('Error logging in: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('An error occurred during login. Please try again later.'),
-          ),
-        );
-      }
     }
   }
 
@@ -65,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/splash_background.jpg'),
+            image: AssetImage('assets/images/welcome_background.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -131,15 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  GradientButton(
                     onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Log In'),
+                    text: 'Log In',
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  GradientButton(
                     onPressed: () {
                       // Handle get started button press
                       // Add error handling and logging as needed
@@ -148,10 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Mr Match Home Page')),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Get Started'),
+                    text: 'Get Started',
                   ),
                 ],
               ),
