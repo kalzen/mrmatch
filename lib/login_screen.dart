@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mr_match/gradient_button.dart';
 import 'package:mr_match/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,27 +15,41 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
-  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _emailController = TextEditingController(); // Added _emailController
+ 
+
+  @override
+  void initState() {
+    super.initState();
+    
+  }
+
+ 
 
   void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       final username = _usernameController.text.trim();
-      final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
+      final email = _emailController.text.trim(); // Use the _emailController
 
-      
+      try {
         final response = await http.post(
-          Uri.parse('https://mrmatch-production.up.railway.app/auth/login/'),
-          headers: {'Content-Type': 'application/json'},
+          Uri.parse('//mrmatch-production.up.railway.app/auth/login'),
+          headers: {
+            'Content-Type': 'application/json',            
+            'Access-Control-Allow-Origin': '*',            
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE, PUT',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+          },
           body: jsonEncode({
             'username': username,
-            'email': email,
             'password': password,
+            'email': email, 
           }),
         );
-         debugPrint(response.body);
-
+        print("${response.statusCode}");
+        print("${response.body}");
         if (response.statusCode == 200) {
           // Login successful, navigate to the home page
           Navigator.pushReplacement(
@@ -49,6 +64,15 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
+      } catch (e) {
+        // Log the error and display a generic error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred while logging in. Please try again later.'),
+          ),
+        );
+         print('Error during login request: $e');
+      }
     }
   }
 
