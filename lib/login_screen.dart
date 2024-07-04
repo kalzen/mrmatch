@@ -16,42 +16,47 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _emailController = TextEditingController(); // Added _emailController
- 
+  final _emailController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    
   }
 
- 
-
-  void _login() async {
+  Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       final username = _usernameController.text.trim();
       final password = _passwordController.text.trim();
-      final email = _emailController.text.trim(); // Use the _emailController
+      final email = _emailController.text.trim();
 
       try {
+        var requestBody = jsonEncode({
+          'username': username,
+          'password': password,
+          'email': email,
+        });
+        //print("$requestBody");
+
         final response = await http.post(
-          Uri.parse('//mrmatch-production.up.railway.app/auth/login'),
+          Uri.parse('https://cors-anywhere.herokuapp.com/https://mrmatch-production.up.railway.app/auth/login'),
           headers: {
-            'Content-Type': 'application/json',            
-            'Access-Control-Allow-Origin': '*',            
-            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE, PUT',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+            'Content-Type': 'application/json',
           },
-          body: jsonEncode({
-            'username': username,
-            'password': password,
-            'email': email, 
-          }),
+          body: requestBody,
         );
+
         print("${response.statusCode}");
         print("${response.body}");
+
         if (response.statusCode == 200) {
-          // Login successful, navigate to the home page
+          // Login successful, save the session cookie
+          final prefs = await SharedPreferences.getInstance();
+          String? sessionCookie = response.headers['set-cookie'];
+          if (sessionCookie != null) {
+            await prefs.setString('session_cookie', sessionCookie);
+          }
+
+          // Navigate to the home page
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Mr Match Home Page')),
@@ -71,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
             content: Text('An error occurred while logging in. Please try again later.'),
           ),
         );
-         print('Error during login request: $e');
+        print('Error during login request: $e');
       }
     }
   }
